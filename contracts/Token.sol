@@ -2,10 +2,9 @@
 pragma solidity ^0.8.9;
 import "hardhat/console.sol";
 
-/**
- * The Token contract does this and that...
- */
 contract Token {
+
+    //MARK: - Properties
 	string public name;
     string public symbol;
     uint256 public decimals = 18;
@@ -15,6 +14,7 @@ contract Token {
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 
+    //MARK: - Constructor
     constructor(string memory _name, string memory _symbol, uint256 _totalSupply) {
         name = _name;
         symbol = _symbol;
@@ -22,14 +22,9 @@ contract Token {
         balanceOf[msg.sender] = totalSupply;
     }
 
+    //MARK: - Public functions
     function transfer(address _to, uint256 _value) public returns(bool success) {
-        require(balanceOf[msg.sender] >= _value);
-        require(_to != address(0));
-
-        balanceOf[msg.sender] -= _value;
-        balanceOf[_to] += _value;
-        
-        emit Transfer(msg.sender, _to, _value);
+        _transfer(msg.sender, _to, _value);
         return true;
     }
 
@@ -40,4 +35,20 @@ contract Token {
         return true;
     }
     
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+        require(allowance[_from][msg.sender] >= _value);
+        allowance[_from][msg.sender] -= _value;
+        _transfer(_from, _to, _value);
+        return true;
+    }
+
+    //MARK: - Internal functions
+    function _transfer(address _from, address _to, uint256 _value) internal {
+        require(balanceOf[_from] >= _value);
+        require(_to != address(0));
+        balanceOf[_from] -= _value;
+        balanceOf[_to] += _value;
+        emit Transfer(_from, _to, _value);
+    }
+
 }
