@@ -132,7 +132,7 @@ describe('Token', () => {
 			})
 
 			it('transfers token balances', async () => {
-				expect(await token.balanceOf(deployer.address)).to.be.equal(ethers.utils.parseUnits('999900', 'ether'))
+				expect(await token.balanceOf(deployer.address)).to.be.equal(tokens(999900))
 				expect(await token.balanceOf(reciever.address)).to.be.equal(amount)
 			})
 
